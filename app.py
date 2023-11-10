@@ -39,7 +39,8 @@ def setFixture():
 	return {"status": "ok"}
 
 
-@app.route("/film/list")
+## GET ALL FILMS
+@app.route("/film/list", methods=["GET"])
 def getListFilm():
 	bdd = create_connection(r"bdd.db")
 	cursor = bdd.cursor()
@@ -49,7 +50,8 @@ def getListFilm():
 	return jsonify(rows)
 
 
-@app.route("/film/<int:id>")
+## GET FILM (avec id)
+@app.route("/film/<int:id>", methods=["GET"])
 def getFilm(id):
 	bdd = create_connection(r"bdd.db")
 	cursor = bdd.cursor()
@@ -59,6 +61,7 @@ def getFilm(id):
 	return jsonify(rows)
 
 
+## CREATE FILM
 # LANCEMENT TEST : 127.0.0.1:5000/film/create?titre=AAA&description=BBB&date=2000-10-01&notation=0
 @app.route("/film/create", methods=["GET", "POST"])
 def postFilm():
@@ -77,7 +80,18 @@ def postFilm():
 	bdd.commit()
 
 	bdd.close()
-	return f"Film avec l'id {cursor.lastrowid} a été créé."
+	return {"status": "201"}
+
+
+## DELETE FILM
+@app.route("/film/delete/<int:id>", methods=["GET", "DELETE"])
+def deleteFilm(id):
+	bdd = create_connection(r"bdd.db")
+	cursor = bdd.cursor()
+	cursor.execute("DELETE FROM film WHERE id = ?", (id,))
+	bdd.commit()
+	bdd.close()
+	return {"status": "200"}
 
 
 if __name__ == "__main__":
