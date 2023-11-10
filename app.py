@@ -31,7 +31,7 @@ def create_connection(db_file):
 @app.route("/")
 def index():
 	return {"status": "API is running"}
-
+&
 
 @app.route("/fixture")
 def setFixture():
@@ -39,7 +39,7 @@ def setFixture():
 	return {"status": "ok"}
 
 
-## GET ALL FILMS
+# GET ALL FILMS
 @app.route("/film/list", methods=["GET"])
 def getListFilm():
 	bdd = create_connection(r"bdd.db")
@@ -50,7 +50,7 @@ def getListFilm():
 	return jsonify({"status": 200}, rows)
 
 
-## GET FILM (avec id)
+# GET FILM (avec id)
 @app.route("/film/<int:id>", methods=["GET"])
 def getFilm(id):
 	bdd = create_connection(r"bdd.db")
@@ -61,7 +61,7 @@ def getFilm(id):
 	return jsonify({"status": 200}, rows)
 
 
-## CREATE FILM
+# CREATE FILM
 # curl -X POST -H "Content-Type: application/json" -d '{"titre":"BBB", "description":"CCC", "date":"2023-01-01", "notation":"5"}' http://localhost:5000/film/create
 # LANCEMENT TEST : 127.0.0.1:5000/film/create?titre=AAA&description=BBB&date=2000-10-01&notation=0
 @app.route("/film/create", methods=["GET", "POST"])
@@ -93,7 +93,7 @@ def postFilm():
 	return {"status": "201"}
 
 
-## DELETE FILM
+# DELETE FILM
 @app.route("/film/delete/<int:id>", methods=["GET", "DELETE"])
 def deleteFilm(id):
 	bdd = create_connection(r"bdd.db")
