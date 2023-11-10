@@ -44,10 +44,14 @@ def setFixture():
 def getListFilm():
 	bdd = create_connection(r"bdd.db")
 	cursor = bdd.cursor()
-	cursor.execute("SELECT * FROM film")
-	rows = cursor.fetchall()
-	bdd.close()
-	return jsonify({"status": 200}, rows)
+	
+	try:
+		cursor.execute("SELECT * FROM film")
+		rows = cursor.fetchall()
+		bdd.close()
+		return jsonify({"status": 200}, rows)
+	except sqlite3.Error:
+		return jsonify({"status": 404})
 
 
 # GET FILM (avec id)
@@ -55,10 +59,13 @@ def getListFilm():
 def getFilm(id):
 	bdd = create_connection(r"bdd.db")
 	cursor = bdd.cursor()
-	cursor.execute("SELECT * FROM film WHERE id = ?", (id,))
-	rows = cursor.fetchall()
-	bdd.close()
-	return jsonify({"status": 200}, rows)
+	try:
+		cursor.execute("SELECT * FROM film WHERE id = ?", (id,))
+		rows = cursor.fetchall()
+		bdd.close()
+		return jsonify({"status": 200}, rows)
+	except sqlite3.Error:
+		return jsonify({"status": 404})
 
 
 # CREATE FILM
