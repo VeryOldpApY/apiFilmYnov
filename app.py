@@ -93,11 +93,13 @@ def postFilm():
 		notation = data['notation']
 	##
 	
-	sql = "INSERT INTO film (titre, description, dateParution, notation) VALUES (?, ?, ?, ?)"
-	cursor.execute(sql, (titre, description, dateFormat, notation))
-	bdd.commit()
-	bdd.close()
-	return {"status": "201"}
+	try:
+		sql = "INSERT INTO film (titre, description, dateParution, notation) VALUES (?, ?, ?, ?)"
+		cursor.execute(sql, (titre, description, dateFormat, notation))
+		bdd.commit()
+		return {"status": "201", "id": cursor.lastrowid}
+	except sqlite3.Error as error:
+		return {"status": "404"}
 
 
 # DELETE FILM
@@ -105,10 +107,13 @@ def postFilm():
 def deleteFilm(id):
 	bdd = create_connection(r"bdd.db")
 	cursor = bdd.cursor()
-	cursor.execute("DELETE FROM film WHERE id = ?", (id,))
-	bdd.commit()
-	bdd.close()
-	return {"status": "200"}
+	try:
+		cursor.execute("DELETE FROM film WHERE id = ?", (id,))
+		bdd.commit()
+		bdd.close()
+		return {"status": "200", "id": id}
+	except sqlite3.Error:
+		return jsonify({"status": 404})
 
 
 if __name__ == "__main__":
