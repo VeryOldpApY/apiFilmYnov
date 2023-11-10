@@ -1,12 +1,5 @@
 # apiFilmYnov
 
-
-# Installations des outils nécessaires au laucement de l'app :
-Utilisez la commande suivante :
-pip install -r requirements.txt
-
-# apiFilmYnov
-
 Une API pour gérer ces films
 
 *Projet d'école*
