@@ -31,7 +31,7 @@ def create_connection(db_file):
 @app.route("/")
 def index():
 	return {"status": "API is running"}
-&
+
 
 @app.route("/fixture")
 def setFixture():
