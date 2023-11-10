@@ -1,24 +1,25 @@
 import sqlite3
 from sqlite3 import Error
-from flask import Flask
+from flask import Flask, jsonify
 
 app = Flask(__name__)
-bdd = None
+
+
+def fixture():
+	bdd = create_connection(r"bdd.db")
+	fd = open("schemaBdd.sql", 'r')
+	sql_file_content = fd.read()
+	fd.close()
+	cursor = bdd.cursor()
+	cursor.executescript(sql_file_content)
+	bdd.commit()
+	bdd.close()
 
 
 def create_connection(db_file):
-	""" create a database connection to the SQLite database
-		specified by the db_file
-	:param db_file: database file
-	:return: Connection object or None
-	"""
 	conn = None
 	try:
 		conn = sqlite3.connect(db_file)
-		# Utilise le fichier pour créer la table film #
-		with open('schemaBdd.sql') as f:
-			conn.executescript(f.read())
-		# #
 		print(sqlite3.version)
 	except Error as e:
 		print(e)
@@ -26,28 +27,37 @@ def create_connection(db_file):
 	return conn
 
 
+@app.route("/")
+def index():
+	return {"status": "API is running"}
+
+
+@app.route("/fixture")
+def setFixture():
+	fixture()
+	return {"status": "ok"}
+
+
 @app.route("/film/list")
 def getListFilm():
+	bdd = create_connection(r"bdd.db")
 	cursor = bdd.cursor()
 	cursor.execute("SELECT * FROM film")
 	rows = cursor.fetchall()
-	return {rows}
+	bdd.close()
+	return jsonify(rows)
 
 
-@app.route("/film/{id}")
-def getFilm():
+@app.route("/film/<int:id>")
+def getFilm(id):
+	bdd = create_connection(r"bdd.db")
 	cursor = bdd.cursor()
-	cursor.execute("SELECT * FROM film WHERE id = {id}")
+	cursor.execute("SELECT * FROM film WHERE id = ?", (id,))
 	rows = cursor.fetchall()
-	return {rows}
+	bdd.close()
+	return jsonify(rows)
 
-
-# @app.route("/film/put")
-# def putFilm():
-# 	cursor = bdd.cursor()
-# 	cursor.execute("INSERT INTO film (id, titre, description, dateParution, notation) VALUES (2, 'AAA', 'BBB', to_date('05/11/2014', 'DD/MM/YYYY'), 0)")
-# 	bdd.commit()
 
 if __name__ == "__main__":
-	bdd = create_connection(r"bdd.db")
+	fixture()
 	app.run()

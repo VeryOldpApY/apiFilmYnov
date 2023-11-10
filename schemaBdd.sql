@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS posts;
+DROP TABLE IF EXISTS film;
 
 CREATE TABLE film (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -9,4 +9,4 @@ CREATE TABLE film (
 );
 
 INSERT INTO film (titre, description, dateParution, notation)
-VALUES ('Interstellar', 'Super film de Nolan', to_date('05/11/2014', 'DD/MM/YYYY'), 5);
+VALUES ('Interstellar', 'Super film de Nolan', '05/11/2014', 5);
