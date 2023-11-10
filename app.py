@@ -55,7 +55,6 @@ def getFilm(id):
 	cursor = bdd.cursor()
 	cursor.execute("SELECT * FROM film WHERE id = ?", (id,))
 	rows = cursor.fetchall()
-	username = request.args.get('username')
 	bdd.close()
 	return jsonify(rows)
 
