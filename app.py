@@ -47,7 +47,7 @@ def getListFilm():
 	cursor.execute("SELECT * FROM film")
 	rows = cursor.fetchall()
 	bdd.close()
-	return jsonify(rows)
+	return jsonify({"status": 200}, rows)
 
 
 ## GET FILM (avec id)
@@ -58,27 +58,37 @@ def getFilm(id):
 	cursor.execute("SELECT * FROM film WHERE id = ?", (id,))
 	rows = cursor.fetchall()
 	bdd.close()
-	return jsonify(rows)
+	return jsonify({"status": 200}, rows)
 
 
 ## CREATE FILM
+# curl -X POST -H "Content-Type: application/json" -d '{"titre":"BBB", "description":"CCC", "date":"2023-01-01", "notation":"5"}' http://localhost:5000/film/create
 # LANCEMENT TEST : 127.0.0.1:5000/film/create?titre=AAA&description=BBB&date=2000-10-01&notation=0
 @app.route("/film/create", methods=["GET", "POST"])
 def postFilm():
+	global titre, description, dateFormat, notation
 	bdd = create_connection(r"bdd.db")
 	cursor = bdd.cursor()
-
-	## Récupe des arguments
-	titre = request.args.get('titre')
-	description = request.args.get('description')
-	dateFormat = datetime.strptime(request.args.get('date'), "%Y-%m-%d")
-	notation = request.args.get('notation')
+	
+	if request.method == "GET":
+		# Récupe des arguments
+		titre = request.args.get('titre')
+		description = request.args.get('description')
+		dateFormat = datetime.strptime(request.args.get('date'), "%Y-%m-%d")
+		notation = request.args.get('notation')
 	##
-
+	elif request.method == "POST":
+		# Récupe des arguments
+		data = request.get_json()
+		titre = data['titre']
+		description = data['description']
+		dateFormat = datetime.strptime(data['date'], "%Y-%m-%d")
+		notation = data['notation']
+	##
+	
 	sql = "INSERT INTO film (titre, description, dateParution, notation) VALUES (?, ?, ?, ?)"
 	cursor.execute(sql, (titre, description, dateFormat, notation))
 	bdd.commit()
-
 	bdd.close()
 	return {"status": "201"}
 
@@ -95,5 +105,4 @@ def deleteFilm(id):
 
 
 if __name__ == "__main__":
-	fixture()
-	app.run()
+	app.run(debug=True)
