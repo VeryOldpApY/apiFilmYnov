@@ -5,8 +5,8 @@ CREATE TABLE film (
     titre TEXT NOT NULL,
     description TEXT,
     dateParution DATE,
-    notation REAL
+    notation INT
 );
 
 INSERT INTO film (titre, description, dateParution, notation)
-VALUES ('Interstellar', 'Super film de Nolan', '05/11/2014', 5);
+VALUES ('Interstellar', 'Super film de Nolan', '2014-11-05', 5);
