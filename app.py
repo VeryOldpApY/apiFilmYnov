@@ -1,5 +1,7 @@
-from datetime import datetime
+import os
 import sqlite3
+
+from datetime import datetime
 from sqlite3 import Error
 from flask import Flask, jsonify, request
 
@@ -44,7 +46,6 @@ def setFixture():
 def getListFilm():
 	bdd = create_connection(r"bdd.db")
 	cursor = bdd.cursor()
-	
 	try:
 		cursor.execute("SELECT * FROM film")
 		rows = cursor.fetchall()
@@ -99,7 +100,7 @@ def postFilm():
 		bdd.commit()
 		return {"status": "201", "id": cursor.lastrowid}
 	except sqlite3.Error as error:
-		return {"status": "404"}
+		return {"status": 422}
 
 
 # DELETE FILM
@@ -113,8 +114,10 @@ def deleteFilm(id):
 		bdd.close()
 		return {"status": "200", "id": id}
 	except sqlite3.Error:
-		return jsonify({"status": 404})
+		return jsonify({"status": 422})
 
 
 if __name__ == "__main__":
+	if os.path.exists("bdd.db") is False:
+		fixture()
 	app.run(debug=True)
