@@ -5,7 +5,7 @@ Une API pour gérer ces films
 *Projet d'école*
 
 ## Introduction
-
+Python 3.10 est requis
 
 ## Installation 
 ```bash
@@ -14,7 +14,7 @@ cd apiFilmYnov
 pip install -r requirements.txt
 ```
 
-## Usage
+## Utilisation
 
 ```bash
 python3 app.py
