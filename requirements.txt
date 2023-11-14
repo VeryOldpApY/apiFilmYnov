@@ -1,1 +1,2 @@
 flask~=3.0.0
+flask-swagger-ui>=1.0.11
