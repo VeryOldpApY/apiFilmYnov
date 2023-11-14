@@ -1,0 +1,269 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "version": "1.0.11",
+    "title": "Film Documentation",
+    "description": "Voici la documentation de l'API des films.\n\nCi-dessous les requêtes disponibles de l'API. Vous pouvez consulter les films, ainsi que la liste de tous les films. Vous pouvez aussi créer et supprimer des films.\n\n**ATTENTION**, n'ayant pas terminer d'apprendre à utiliser Swagger, la création de film devra passer par un outil tier ou utiliser une url comme celle-ci ' **/film/create?titre=AAA&description=BBB&date=2000-10-01&notation=1** '"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:5000"
+    }
+  ],
+  "tags": [
+    {
+      "name": "film",
+      "description": "Toutes les actions concernant les films"
+    }
+  ],
+  "paths": {
+    "/film/list": {
+      "get": {
+        "tags": [
+          "film"
+        ],
+        "summary": "Trouver tous les films",
+        "operationId": "findPetsByStatus",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Film"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Film"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Aucun film trouvé"
+          }
+        }
+      }
+    },
+    "/film/{id}": {
+      "get": {
+        "tags": [
+          "film"
+        ],
+        "summary": "Trouver un film via l'id",
+        "operationId": "getPetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID du film",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Film"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Film"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Aucun film trouvé"
+          }
+        }
+      }
+    },
+    "/film/create{titre}{description}{date}{notation}": {
+      "post": {
+        "tags": [
+          "film"
+        ],
+        "summary": "Créer un nouveau film",
+        "description": "**ATTENTION**, je n'ai pas encore appris comment faire fonctionner avec la doc Swagger. Donc pour pouvoir créer un film il faudra passer par un outil tier ou utiliser une url comme celle-ci : \n\n**film/create?titre=AAA&description=BBB&date=2000-10-01&notation=1**",
+        "operationId": "addPet",
+        "parameters": [
+          {
+            "name": "titre",
+            "in": "path",
+            "description": "Titre du film",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "description",
+            "in": "path",
+            "description": "Description du film",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "path",
+            "description": "Date de sortie du film",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "YYYY-MM-DD"
+            }
+          },
+          {
+            "name": "notation",
+            "in": "path",
+            "description": "Note donnée au film (de 1 à 5)",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Créer un nouveau film",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Film"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Film"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Film"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Film"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Film"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/film/delete/{id}": {
+      "delete": {
+        "tags": [
+          "film"
+        ],
+        "summary": "Effacer un film",
+        "operationId": "deletePet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID du film",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Film": {
+        "required": [
+          "id",
+          "titre"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "titre": {
+            "type": "string",
+            "example": "Interstellar"
+          },
+          "description": {
+            "type": "string",
+            "example": "Super film de Nolan"
+          },
+          "dateParution": {
+            "type": "string",
+            "format": "YYYY-MM-DD",
+            "example": "2014-11-05T00:00:00.000Z"
+          },
+          "notation": {
+            "type": "integer",
+            "example": 5,
+            "description": "Notation du film (de 1 à 5)"
+          }
+        },
+        "xml": {
+          "name": "Film"
+        }
+      }
+    },
+    "requestBodies": {
+      "Pet": {
+        "description": "Pet object that needs to be added to the store",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Film"
+            }
+          },
+          "application/xml": {
+            "schema": {
+              "$ref": "#/components/schemas/Film"
+            }
+          }
+        }
+      }
+    }
+  }
+}

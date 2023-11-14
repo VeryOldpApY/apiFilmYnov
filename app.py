@@ -4,9 +4,35 @@ import sqlite3
 from datetime import datetime
 from sqlite3 import Error
 from flask import Flask, jsonify, request
+###
+from flask_swagger_ui import get_swaggerui_blueprint
+###
 
 app = Flask(__name__)
 
+###
+SWAGGER_URL = '/film/doc'  # URL
+API_URL = '/static/jsonSwagger.json' 
+
+# Call factory function to create our blueprint
+swaggerui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL, 
+    API_URL,
+    config={  
+        'app_name': "Film Documentation"
+    },
+    # oauth_config={  # OAuth config. See https://github.com/swagger-api/swagger-ui#oauth2-configuration .
+    #    'clientId': "your-client-id",
+    #    'clientSecret': "your-client-secret-if-required",
+    #    'realm': "your-realms",
+    #    'appName': "your-app-name",
+    #    'scopeSeparator': " ",
+    #    'additionalQueryStringParams': {'test': "hello"}
+    # }
+)
+
+app.register_blueprint(swaggerui_blueprint)
+###
 
 def fixture():
 	bdd = create_connection(r"bdd.db")
@@ -71,7 +97,7 @@ def getFilm(id):
 
 # CREATE FILM
 # curl -X POST -H "Content-Type: application/json" -d '{"titre":"BBB", "description":"CCC", "date":"2023-01-01", "notation":"5"}' http://localhost:5000/film/create
-# LANCEMENT TEST : 127.0.0.1:5000/film/create?titre=AAA&description=BBB&date=2000-10-01&notation=0
+# LANCEMENT TEST : 127.0.0.1:5000/film/create?titre=AAA&description=BBB&date=2000-10-01&notation=1
 @app.route("/film/create", methods=["GET", "POST"])
 def postFilm():
 	global titre, description, dateFormat, notation
