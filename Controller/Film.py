@@ -17,7 +17,7 @@ def getFilm():
 	if uid is None:
 		return jsonify({"status": 422, "message": "Parameters Error"})
 	
-	sql = "SELECT * FROM film WHERE uid = ?"
+	sql = "SELECT uid, titre, description, dateparution, notation FROM film WHERE uid = ?"
 	data = Database.request(sql, (uid,))
 	if data is None:
 		return jsonify({"status": 422, "message": "SQL Error"})
@@ -31,7 +31,7 @@ def getListFilm():
 	if page is None or page < 0:
 		return jsonify({"status": 422, "message": "Parameters Error"})
 	
-	sql = "SELECT * FROM film LIMIT ? OFFSET ?"
+	sql = "SELECT uid, titre, description, dateparution, notation FROM film LIMIT ? OFFSET ?"
 	data = Database.request(sql, ((page+1)*10, page*10))
 	if data is None:
 		return jsonify({"status": 422, "message": "SQL Error"})
