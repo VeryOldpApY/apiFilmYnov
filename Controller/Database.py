@@ -32,6 +32,7 @@ def request(sql, params=None):
 	try:
 		cursor.execute(sql, params)
 		rows = cursor.fetchall()
+		bdd.commit()
 		bdd.close()
 		return rows
 	except sqlite3.Error:

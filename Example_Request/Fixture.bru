@@ -1,17 +1,17 @@
 meta {
-  name: List_Film
+  name: Fixture
   type: http
-  seq: 1
+  seq: 4
 }
 
 get {
-  url: http://127.0.0.1:5000/film/list
+  url: http://127.0.0.1:5000/fixture
   body: json
   auth: none
 }
 
 body:json {
   {
-    "page":2
+    "page": 1
   }
 }

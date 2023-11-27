@@ -1,5 +1,5 @@
 # GET ALL FILMS
-import sqlite3
+import uuid
 from datetime import datetime
 
 from flask import jsonify, request, Blueprint
@@ -14,7 +14,7 @@ route_blueprint = Blueprint('film', __name__)
 def getFilm():
 	param = request.get_json()
 	uid = param["uid"]
-	sql = "SELECT * FROM film WHERE id = ?"
+	sql = "SELECT * FROM film WHERE uid = ?"
 	data = Database.request(sql, (uid,))
 	if data is None:
 		return jsonify({"status": 422, "message": "SQL Error"})
@@ -24,12 +24,12 @@ def getFilm():
 @route_blueprint.route("/film/list", methods=["GET"])
 def getListFilm():
 	param = request.get_json()
-	page = param["page"]
+	page = param["page"] - 1
 	if page is None:
 		return jsonify({"status": 422, "message": "page is null"})
 	
-	sql = "SELECT * FROM film LIMIT ?, ?"
-	data = Database.request(sql, (page * 10, (page + 1) * 10))
+	sql = "SELECT * FROM film LIMIT ? OFFSET ?"
+	data = Database.request(sql, ((page+1)*10, page*10))
 	if data is None:
 		return jsonify({"status": 422, "message": "SQL Error"})
 	return jsonify({"status": 200}, data)
@@ -45,19 +45,23 @@ def postFilm():
 	description = data["description"]
 	dateFormat = datetime.strptime(data["date"], "%Y-%m-%d")
 	notation = data["notation"]
+	uid = str(uuid.uuid4())
 	
-	sql = "INSERT INTO film (titre, description, dateParution, notation) VALUES (?, ?, ?, ?)"
-	data = Database.request(sql, (titre, description, dateFormat, notation))
+	sql = "INSERT INTO film (uid, titre, description, dateParution, notation) VALUES (?, ?, ?, ?, ?)"
+	data = Database.request(sql, (str(uuid.uuid4()), titre, description, dateFormat, notation))
 	if data is None:
 		return jsonify({"status": 422, "message": "SQL Error"})
-	return jsonify({"status": 200, "message": "Film created"})
+	return jsonify({"status": 200, "message": "Film created", "uid": uid})
 
 
 # DELETE FILM
 @route_blueprint.route("/film", methods=["DELETE"])
 def deleteFilm():
-	sql = "DELETE FROM film WHERE id = ?"
-	data = Database.request(sql, (id,))
+	param = request.get_json()
+	uid = param["uid"]
+	
+	sql = "DELETE FROM film WHERE uid = ?"
+	data = Database.request(sql, (uid,))
 	if data is None:
 		return jsonify({"status": 422, "message": "SQL Error"})
-	return jsonify({"status": 200}, data)
+	return jsonify({"status": 200, "message": "Film deleted"})
