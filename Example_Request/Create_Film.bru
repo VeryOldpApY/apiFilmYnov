@@ -1,0 +1,24 @@
+meta {
+  name: Create_Film
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://127.0.0.1:5000/film
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "titre": "test",
+    "description": "description test",
+    "dateFormat": "2023-09-01",
+    "notation": 5
+  }
+}
+
+body:multipart-form {
+  test: testUwU
+}
