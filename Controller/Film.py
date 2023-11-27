@@ -46,14 +46,44 @@ def postFilm():
 	description = data["description"]
 	dateFormat = datetime.strptime(data["date"], "%Y-%m-%d")
 	notation = int(data["notation"])
+	categorie = data["categorie"]
 	uid = str(uuid.uuid4())
 	if titre is None or description is None or dateFormat is None or notation is None:
 		return jsonify({"status": 422, "message": "Parameters Error"})
-	
+
+	# CHECK SI TITRE FILM EXISTE DEJA
+	sql = "SELECT uid FROM film WHERE titre = ?"
+	data = Database.request(sql, (titre,))
+	if data:
+		return jsonify({"status": 422, "message": "Parameters Error, un film avec le titre '"+titre+"' existe déjà"}, data)
+
+	# RECUP LES UID DES CATEGORIES + CHECK SI ELLES EXISTENT
+	listeCategorieId = []
+	for i in categorie:
+		sql = "SELECT id FROM categorie WHERE nom = ?"
+		data = Database.request(sql, (i,))
+		if data is None:
+			return jsonify({"status": 422, "message": "Parameters Error, la categorie "+i+" n'existe pas"})
+		listeCategorieId.append(data)
+
+	# INSERT FILM
 	sql = "INSERT INTO film (uid, titre, description, dateParution, notation) VALUES (?, ?, ?, ?, ?)"
 	data = Database.request(sql, (str(uuid.uuid4()), titre, description, dateFormat, notation))
 	if data is None:
 		return jsonify({"status": 422, "message": "SQL Error"})
+	
+	# RECUP ID DE FILM
+	sql = "SELECT id FROM film WHERE titre = ?"
+	filmId = Database.request(sql, (titre,))
+
+	# INSERT film_categorie UNIQUEMENT SI IL Y A DES CATEGORIES A AJOUTER
+	if len(listeCategorieId) != 0:
+		for categorieId in listeCategorieId:
+			sql = "INSERT INTO film_categorie (film_id, categorie_id) VALUES (?, ?)"
+			data = Database.request(sql, (filmId, categorieId))
+			if data is None:
+				return jsonify({"status": 422, "message": "SQL Error"})
+	
 	return jsonify({"status": 200, "message": "Film created", "uid": uid})
 
 
