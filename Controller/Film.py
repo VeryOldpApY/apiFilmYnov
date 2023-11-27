@@ -28,7 +28,7 @@ def getFilm():
 def getListFilm():
 	param = request.get_json()
 	page = int(param.get(["page"], 1)) - 1
-	if page is None:
+	if page is None or page < 0:
 		return jsonify({"status": 422, "message": "Parameters Error"})
 	
 	sql = "SELECT * FROM film LIMIT ? OFFSET ?"
