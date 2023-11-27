@@ -14,6 +14,9 @@ route_blueprint = Blueprint('film', __name__)
 def getFilm():
 	param = request.get_json()
 	uid = param["uid"]
+	if uid is None:
+		return jsonify({"status": 422, "message": "Parameters Error"})
+	
 	sql = "SELECT * FROM film WHERE uid = ?"
 	data = Database.request(sql, (uid,))
 	if data is None:
@@ -24,9 +27,9 @@ def getFilm():
 @route_blueprint.route("/film/list", methods=["GET"])
 def getListFilm():
 	param = request.get_json()
-	page = param["page"] - 1
+	page = int(param.get(["page"], 1)) - 1
 	if page is None:
-		return jsonify({"status": 422, "message": "page is null"})
+		return jsonify({"status": 422, "message": "Parameters Error"})
 	
 	sql = "SELECT * FROM film LIMIT ? OFFSET ?"
 	data = Database.request(sql, ((page+1)*10, page*10))
@@ -36,16 +39,16 @@ def getListFilm():
 
 
 # CREATE FILM
-# curl -X POST -H "Content-Type: application/json" -d '{"titre":"BBB", "description":"CCC", "date":"2023-01-01", "notation":"5"}' http://localhost:5000/film/create
-# LANCEMENT TEST : 127.0.0.1:5000/film/create?titre=AAA&description=BBB&date=2000-10-01&notation=1
 @route_blueprint.route("/film", methods=["POST"])
 def postFilm():
 	data = request.get_json()
 	titre = data["titre"]
 	description = data["description"]
 	dateFormat = datetime.strptime(data["date"], "%Y-%m-%d")
-	notation = data["notation"]
+	notation = int(data["notation"])
 	uid = str(uuid.uuid4())
+	if titre is None or description is None or dateFormat is None or notation is None:
+		return jsonify({"status": 422, "message": "Parameters Error"})
 	
 	sql = "INSERT INTO film (uid, titre, description, dateParution, notation) VALUES (?, ?, ?, ?, ?)"
 	data = Database.request(sql, (str(uuid.uuid4()), titre, description, dateFormat, notation))
@@ -59,6 +62,8 @@ def postFilm():
 def deleteFilm():
 	param = request.get_json()
 	uid = param["uid"]
+	if uid is None:
+		return jsonify({"status": 422, "message": "Parameters Error"})
 	
 	sql = "DELETE FROM film WHERE uid = ?"
 	data = Database.request(sql, (uid,))
