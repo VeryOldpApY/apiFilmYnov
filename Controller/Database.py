@@ -1,6 +1,8 @@
 import sqlite3
 from sqlite3 import Error
 
+from flask import jsonify
+
 
 def create_connection(db_file):
 	conn = None
@@ -22,3 +24,17 @@ def fixture():
 	cursor.executescript(sql_file_content)
 	bdd.commit()
 	bdd.close()
+	
+
+def request(sql, params=None):
+	bdd = create_connection(r"bdd.db")
+	cursor = bdd.cursor()
+	try:
+		cursor.execute(sql, params)
+		rows = cursor.fetchall()
+		bdd.commit()
+		bdd.close()
+		return rows
+	except sqlite3.Error:
+		return None
+	

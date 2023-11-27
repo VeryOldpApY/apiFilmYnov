@@ -1,10 +1,10 @@
 meta {
-  name: Get_Film
+  name: Create_Film
   type: http
-  seq: 2
+  seq: 3
 }
 
-get {
+post {
   url: http://127.0.0.1:5000/film
   body: json
   auth: none
@@ -12,7 +12,10 @@ get {
 
 body:json {
   {
-    "uid": "9615f5aa-56be-4bac-af94-39e2e11633e4"
+    "titre": "test",
+    "description": "description test",
+    "date": "2023-09-01",
+    "notation": 5
   }
 }
 

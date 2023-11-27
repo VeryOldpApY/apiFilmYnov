@@ -38,6 +38,7 @@ swaggerui_blueprint = get_swaggerui_blueprint(
 
 app.register_blueprint(swaggerui_blueprint)
 
+
 ###
 
 @app.route("/")
@@ -55,4 +56,3 @@ if __name__ == "__main__":
 	if os.path.exists("bdd.db") is False:
 		Database.fixture()
 	app.run(debug=True)
-	
