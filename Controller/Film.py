@@ -17,7 +17,7 @@ def getFilm():
 	if uid is None:
 		return jsonify({"status": 422, "message": "Parameters Error"})
 	
-	sql = "SELECT * FROM film WHERE uid = ?"
+	sql = "SELECT uid, titre, description, dateparution, notation FROM film WHERE uid = ?"
 	data = Database.request(sql, (uid,))
 	if data is None:
 		return jsonify({"status": 422, "message": "SQL Error"})
@@ -27,11 +27,14 @@ def getFilm():
 @route_blueprint.route("/film/list", methods=["GET"])
 def getListFilm():
 	param = request.get_json()
-	page = int(param.get(["page"], 1)) - 1
-	if page is None:
+	try:
+		page = int(param.get("page", 1)) - 1
+		if page is None or page < 0:
+			return jsonify({"status": 422, "message": "Parameters Error"})
+	except ValueError:
 		return jsonify({"status": 422, "message": "Parameters Error"})
 	
-	sql = "SELECT * FROM film LIMIT ? OFFSET ?"
+	sql = "SELECT uid, titre, description, dateparution, notation FROM film LIMIT ? OFFSET ?"
 	data = Database.request(sql, ((page+1)*10, page*10))
 	if data is None:
 		return jsonify({"status": 422, "message": "SQL Error"})
@@ -48,6 +51,11 @@ def postFilm():
 	notation = int(data["notation"])
 	categorie = data["categorie"]
 	uid = str(uuid.uuid4())
+	data = None
+	while data is not None:
+		uid = str(uuid.uuid4())
+		data = Database.request("SELECT uid FROM film WHERE uid = ?", (uid,))
+		
 	if titre is None or description is None or dateFormat is None or notation is None:
 		return jsonify({"status": 422, "message": "Parameters Error"})
 

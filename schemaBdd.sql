@@ -4,8 +4,8 @@ DROP TABLE IF EXISTS film_categorie;
 
 CREATE TABLE film (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    uid TEXT NOT NULL,
-    titre TEXT NOT NULL,
+    uid TEXT NOT NULL UNIQUE,
+    titre TEXT NOT NULL UNIQUE,
     description TEXT,
     dateParution DATE,
     notation INT
@@ -13,8 +13,8 @@ CREATE TABLE film (
 
 CREATE TABLE categorie (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    uid TEXT NOT NULL,
-    nom TEXT NOT NULL
+    uid TEXT NOT NULL UNIQUE,
+    nom TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE film_categorie (
