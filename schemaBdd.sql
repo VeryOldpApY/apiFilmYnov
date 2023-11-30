@@ -25,8 +25,6 @@ CREATE TABLE film_categorie (
     FOREIGN KEY (categorie_id) REFERENCES categorie(id)
 );
 
-
-
 -- LES INSERT
 INSERT INTO film (uid, titre, description, dateParution, notation)
 VALUES ('uid', 'Interstellar', 'Super film de Nolan', '2014-11-05', 5),
@@ -46,9 +44,6 @@ VALUES ('uid', 'Interstellar', 'Super film de Nolan', '2014-11-05', 5),
 ('uid14', 'titre14', 'description14', '2020-01-01', 1)
 ;
 
-INSERT INTO categorie (uid, nom)
-VALUES ('uid1', 'Science Fiction'), ('uid2', 'Drame'), ('uid3', 'Christopher Nolan')
-;
+INSERT INTO categorie (uid, nom) VALUES ('uid1', 'Science Fiction'), ('uid2', 'Drame'), ('uid3', 'Christopher Nolan');
 
-INSERT INTO film_categorie (film_id, categorie_id)
-VALUES (1, 1), (1, 2), (1, 3);
+INSERT INTO film_categorie (film_id, categorie_id) VALUES (1, 1), (1, 2), (1, 3);
