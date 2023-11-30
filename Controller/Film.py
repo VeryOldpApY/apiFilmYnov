@@ -16,14 +16,29 @@ def getFilm():
 	uid = param["uid"]
 	if uid is None:
 		return jsonify({"status": 422, "message": "Parameters Error"})
-	
+
+	# SELECT FILM
 	sql = "SELECT uid, titre, description, dateparution, notation FROM film WHERE uid = ?"
-	data = Database.request(sql, (uid,))
-	if data is None:
+	dataFilm = Database.request(sql, (uid,))
+	if dataFilm is None:
 		return jsonify({"status": 422, "message": "SQL Error"})
+	
+	# SELECT CATEGORIE
+	sql = "SELECT c.uid, c.nom FROM categorie c, film_categorie fc WHERE fc.film_id = (SELECT id FROM film WHERE uid = ?) AND c.id = fc.categorie_id"
+	dataCategorie = Database.request(sql, (uid,))
+	if dataCategorie is None:
+		return jsonify({"status": 422, "message": "SQL Error"})
+
+	tupleCategorie = ()
+	for i in dataCategorie:
+		tupleCategorie += (i[1],)
+
+	data = dataFilm[0] + tupleCategorie
+	
 	return jsonify({"status": 200}, data)
 
 
+# LIST FILMS
 @route_blueprint.route("/film/list", methods=["GET"])
 def getListFilm():
 	param = request.get_json()
@@ -107,4 +122,41 @@ def deleteFilm():
 	data = Database.request(sql, (uid,))
 	if data is None:
 		return jsonify({"status": 422, "message": "SQL Error"})
+	return jsonify({"status": 200, "message": "Film deleted"})
+
+
+# ADD/REMOVE CATEGORIE FROM FILM
+@route_blueprint.route("/film/categorie", methods=["PUT"])
+def Film_Categeorie():
+	param = request.get_json()
+	filmUid = param["filmUid"]
+	addCategorie = param["addCategorie"]
+	removeCategorie = param["removeCategorie"]
+
+	# CHECK SI LES CATEGORIES EXISTENT
+	for i in addCategorie:
+		sql = "SELECT id FROM categorie WHERE nom = ?"
+		data = Database.request(sql, (i,))
+		if data is None:
+			return jsonify({"status": 422, "message": "Parameters Error, la categorie "+i+" n'existe pas"})
+	for i in removeCategorie:
+		sql = "SELECT id FROM categorie WHERE nom = ?"
+		data = Database.request(sql, (i,))
+		if data is None:
+			return jsonify({"status": 422, "message": "Parameters Error, la categorie "+i+" n'existe pas"})
+
+	# INSERT film_categorie
+	for categorieName in addCategorie:
+		sql = "INSERT INTO film_categorie (film_id, categorie_id) SELECT (SELECT id FROM film WHERE uid = ?), id FROM categorie WHERE nom = ?;"
+		data = Database.request(sql, (filmUid, categorieName))
+		if data is None:
+			return jsonify({"status": 422, "message": "SQL Error"})
+
+	# DELETE film_categorie
+	for categorieName in removeCategorie:
+		sql = "DELETE FROM film_categorie WHERE film_id = (SELECT id FROM film WHERE uid = ?) AND categorie_id = (SELECT id FROM categorie WHERE nom = ?)"
+		data = Database.request(sql, (filmUid, categorieName))
+		if data is None:
+			return jsonify({"status": 422, "message": "SQL Error"})	
+	
 	return jsonify({"status": 200, "message": "Film deleted"})

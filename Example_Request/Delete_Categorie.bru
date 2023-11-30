@@ -1,0 +1,17 @@
+meta {
+  name: Delete_Categorie
+  type: http
+  seq: 9
+}
+
+delete {
+  url: http://127.0.0.1:5000/categorie
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "uid": "uid3"
+  }
+}

@@ -10,10 +10,12 @@ from flask_swagger_ui import get_swaggerui_blueprint
 ###
 
 from Controller import Film
+from Controller import Categorie
 from Controller import Database
 
 app = Flask(__name__)
 app.register_blueprint(Film.route_blueprint)
+app.register_blueprint(Categorie.route_blueprint)
 
 ###
 SWAGGER_URL = '/doc'  # URL
