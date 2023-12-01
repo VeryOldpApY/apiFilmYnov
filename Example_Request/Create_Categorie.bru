@@ -1,0 +1,17 @@
+meta {
+  name: Create_Categorie
+  type: http
+  seq: 8
+}
+
+post {
+  url: http://127.0.0.1:5000/categorie
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nom": "testCategorie"
+  }
+}

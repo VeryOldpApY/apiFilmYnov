@@ -1,0 +1,17 @@
+meta {
+  name: Get_Categorie_Film
+  type: http
+  seq: 11
+}
+
+get {
+  url: http://127.0.0.1:5000/categorie/film
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nom": "Drame"
+  }
+}
