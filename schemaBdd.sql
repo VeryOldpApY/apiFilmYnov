@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS film;
 DROP TABLE IF EXISTS categorie;
 DROP TABLE IF EXISTS film_categorie;
+DROP TABLE IF EXISTS affiche;
 
 CREATE TABLE film (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,6 +24,13 @@ CREATE TABLE film_categorie (
     categorie_id INTEGER NOT NULL,
     FOREIGN KEY (film_id) REFERENCES film(id),
     FOREIGN KEY (categorie_id) REFERENCES categorie(id)
+);
+
+CREATE TABLE affiche (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    film_id INTEGER NOT NULL,
+    affiche LONGTEXT NOT NULL,
+    FOREIGN KEY (film_id) REFERENCES film(id)
 );
 
 -- LES INSERT

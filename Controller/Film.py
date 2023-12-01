@@ -1,5 +1,6 @@
 # GET ALL FILMS
 import uuid
+import base64 ###############
 from datetime import datetime
 
 from flask import jsonify, request, Blueprint
@@ -24,7 +25,8 @@ def getFilm():
 		return jsonify({"status": 422, "message": "SQL Error"})
 	
 	# SELECT categorie
-	sql = "SELECT c.uid, c.nom FROM categorie c, film_categorie fc WHERE fc.film_id = (SELECT id FROM film WHERE uid = ?) AND c.id = fc.categorie_id"
+	sql = """SELECT c.uid, c.nom FROM categorie c, film_categorie fc WHERE fc.film_id = (SELECT id FROM film WHERE uid = ?)
+		AND c.id = fc.categorie_id"""
 	dataCategorie = Database.request(sql, (uid,))
 	if dataCategorie is None:
 		return jsonify({"status": 422, "message": "SQL Error"})
@@ -58,7 +60,8 @@ def getListFilm():
 	data = []	
 	for i in dataFilm:
 		# SELECT categorie
-		sql = "SELECT c.uid, c.nom FROM categorie c, film_categorie fc WHERE fc.film_id = (SELECT id FROM film WHERE uid = ?) AND c.id = fc.categorie_id"
+		sql = """SELECT c.uid, c.nom FROM categorie c, film_categorie fc WHERE fc.film_id = (SELECT id FROM film WHERE uid = ?)
+			AND c.id = fc.categorie_id"""
 		dataCategorie = Database.request(sql, (i[0],)) # iud
 		if dataCategorie is None:
 			return jsonify({"status": 422, "message": "SQL Error"})
@@ -148,6 +151,8 @@ def Film_Categeorie():
 	filmUid = param["filmUid"]
 	addCategorie = param["addCategorie"]
 	removeCategorie = param["removeCategorie"]
+	if filmUid is None:
+		return jsonify({"status": 422, "message": "Parameters Error"})
 
 	# CHECK SI LES CATEGORIES EXISTENT
 	for i in addCategorie:
@@ -178,3 +183,22 @@ def Film_Categeorie():
 			return jsonify({"status": 422, "message": "SQL Error"})	
 	
 	return jsonify({"status": 200, "message": "Film's categories updated"})
+
+# Créer JPG de l'affiche du film indiqué
+@route_blueprint.route("/film/affiche/createJPG", methods=["GET"])
+def Film_Affiche_CreateJPG():
+	param = request.get_json()
+	filmTitre = param["filmTitre"]
+	if filmTitre is None:
+		return jsonify({"status": 422, "message": "Parameters Error"})
+
+	### SELECT affiche
+	sql = "SELECT a.affiche, f.titre FROM film f, affiche a WHERE f.titre = ? and a.film_id = f.id"
+	dataTest = Database.request(sql, (filmTitre,))
+	if dataTest is None:
+		return jsonify({"status": 422, "message": "SQL Error"})
+
+	with open("FilesOut/Affiche de "+dataTest[0][1]+".jpg", "wb") as file:
+		file.write( base64.b64decode(dataTest[0][0]) )
+
+	return jsonify({"status": 200, "message": "The poster JPG has been created in the folder 'FilesOut'"})

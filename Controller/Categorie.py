@@ -32,7 +32,7 @@ def getCategorieFilm():
 		return jsonify({"status": 422, "message": "Parameters Error"})
 	
 	sql = """SELECT f.uid, f.titre, f.description, f.dateparution, f.notation
-FROM film_categorie fc, film f WHERE fc.categorie_id = (SELECT id FROM categorie WHERE nom = ?) AND f.id = fc.film_id"""
+		FROM film_categorie fc, film f WHERE fc.categorie_id = (SELECT id FROM categorie WHERE nom = ?) AND f.id = fc.film_id"""
 	data = Database.request(sql, (nom,))
 	if data is None:
 		return jsonify({"status": 422, "message": "SQL Error"})
