@@ -9,7 +9,7 @@ from Controller import Database
 route_blueprint = Blueprint('film', __name__)
 
 
-# GET film (avec id)
+# GET film
 @route_blueprint.route("/film", methods=["GET"])
 def getFilm():
 	param = request.get_json()

@@ -9,7 +9,7 @@ from Controller import Database
 route_blueprint = Blueprint('categorie', __name__)
 
 
-# GET CATEGORIE (avec id)
+# GET categorie
 @route_blueprint.route("/categorie", methods=["GET"])
 def getCategorie():
 	param = request.get_json()
@@ -23,7 +23,22 @@ def getCategorie():
 		return jsonify({"status": 422, "message": "SQL Error"})
 	return jsonify({"status": 200}, data)
 
+# GET categorie's film
+@route_blueprint.route("/categorie/film", methods=["GET"])
+def getCategorieFilm():
+	param = request.get_json()
+	nom = param["nom"]
+	if nom is None:
+		return jsonify({"status": 422, "message": "Parameters Error"})
+	
+	sql = """SELECT f.uid, f.titre, f.description, f.dateparution, f.notation
+FROM film_categorie fc, film f WHERE fc.categorie_id = (SELECT id FROM categorie WHERE nom = ?) AND f.id = fc.film_id"""
+	data = Database.request(sql, (nom,))
+	if data is None:
+		return jsonify({"status": 422, "message": "SQL Error"})
+	return jsonify({"status": 200}, data)
 
+# LIST categories
 @route_blueprint.route("/categorie/list", methods=["GET"])
 def getListCategorie():
 	param = request.get_json()
@@ -41,7 +56,7 @@ def getListCategorie():
 	return jsonify({"status": 200}, data)
 
 
-# CREATE CATEGORIE
+# CREATE categorie
 @route_blueprint.route("/categorie", methods=["POST"])
 def postCategorie():
 	data = request.get_json()
@@ -57,7 +72,7 @@ def postCategorie():
 	return jsonify({"status": 200, "message": "categorie created", "uid": uid})
 
 
-# DELETE CATEGORIE
+# DELETE categorie
 @route_blueprint.route("/categorie", methods=["DELETE"])
 def deleteCategorie():
 	param = request.get_json()
