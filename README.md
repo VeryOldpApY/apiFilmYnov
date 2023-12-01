@@ -1,3 +1,5 @@
+[![Python application](https://github.com/VeryOldpApY/apiFilmYnov/actions/workflows/python-app.yml/badge.svg)](https://github.com/VeryOldpApY/apiFilmYnov/actions/workflows/python-app.yml)
+
 # apiFilmYnov
 Une API pour gérer des films
 
