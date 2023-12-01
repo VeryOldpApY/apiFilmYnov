@@ -9,7 +9,7 @@ from Controller import Database
 route_blueprint = Blueprint('film', __name__)
 
 
-# GET FILM (avec id)
+# GET film (avec id)
 @route_blueprint.route("/film", methods=["GET"])
 def getFilm():
 	param = request.get_json()
@@ -17,28 +17,28 @@ def getFilm():
 	if uid is None:
 		return jsonify({"status": 422, "message": "Parameters Error"})
 
-	# SELECT FILM
+	# SELECT film
 	sql = "SELECT uid, titre, description, dateparution, notation FROM film WHERE uid = ?"
 	dataFilm = Database.request(sql, (uid,))
 	if dataFilm is None:
 		return jsonify({"status": 422, "message": "SQL Error"})
 	
-	# SELECT CATEGORIE
+	# SELECT categorie
 	sql = "SELECT c.uid, c.nom FROM categorie c, film_categorie fc WHERE fc.film_id = (SELECT id FROM film WHERE uid = ?) AND c.id = fc.categorie_id"
 	dataCategorie = Database.request(sql, (uid,))
 	if dataCategorie is None:
 		return jsonify({"status": 422, "message": "SQL Error"})
 
+	# ORGANISE pour l'affichage des categories dans un array dans le rendu json
 	tupleCategorie = ()
 	for i in dataCategorie:
 		tupleCategorie += (i[1],)
-
-	data = dataFilm[0] + tupleCategorie
+	data = (*dataFilm[0], tupleCategorie)
 	
 	return jsonify({"status": 200}, data)
 
 
-# LIST FILMS
+# LIST films
 @route_blueprint.route("/film/list", methods=["GET"])
 def getListFilm():
 	param = request.get_json()
@@ -49,14 +49,30 @@ def getListFilm():
 	except ValueError:
 		return jsonify({"status": 422, "message": "Parameters Error"})
 	
+	# SELECT film
 	sql = "SELECT uid, titre, description, dateparution, notation FROM film LIMIT ? OFFSET ?"
-	data = Database.request(sql, ((page+1)*10, page*10))
-	if data is None:
+	dataFilm = Database.request(sql, ((page+1)*10, page*10))
+	if dataFilm is None:
 		return jsonify({"status": 422, "message": "SQL Error"})
+	
+	data = []	
+	for i in dataFilm:
+		# SELECT categorie
+		sql = "SELECT c.uid, c.nom FROM categorie c, film_categorie fc WHERE fc.film_id = (SELECT id FROM film WHERE uid = ?) AND c.id = fc.categorie_id"
+		dataCategorie = Database.request(sql, (i[0],)) # iud
+		if dataCategorie is None:
+			return jsonify({"status": 422, "message": "SQL Error"})
+
+		# ORGANISE pour l'affichage des categories dans un array dans le rendu json
+		tupleCategorie = ()
+		for y in dataCategorie:
+			tupleCategorie += (y[1],)
+		data.append( (*i, tupleCategorie) )
+
 	return jsonify({"status": 200}, data)
 
 
-# CREATE FILM
+# CREATE film
 @route_blueprint.route("/film", methods=["POST"])
 def postFilm():
 	data = request.get_json()
@@ -110,7 +126,7 @@ def postFilm():
 	return jsonify({"status": 200, "message": "Film created", "uid": uid})
 
 
-# DELETE FILM
+# DELETE film
 @route_blueprint.route("/film", methods=["DELETE"])
 def deleteFilm():
 	param = request.get_json()
@@ -125,7 +141,7 @@ def deleteFilm():
 	return jsonify({"status": 200, "message": "Film deleted"})
 
 
-# ADD/REMOVE CATEGORIE FROM FILM
+# ADD/REMOVE film's categories
 @route_blueprint.route("/film/categorie", methods=["PUT"])
 def Film_Categeorie():
 	param = request.get_json()
@@ -135,15 +151,17 @@ def Film_Categeorie():
 
 	# CHECK SI LES CATEGORIES EXISTENT
 	for i in addCategorie:
-		sql = "SELECT id FROM categorie WHERE nom = ?"
-		data = Database.request(sql, (i,))
-		if data is None:
-			return jsonify({"status": 422, "message": "Parameters Error, la categorie "+i+" n'existe pas"})
+		if i != "":
+			sql = "SELECT id FROM categorie WHERE nom = ?"
+			data = Database.request(sql, (i,))
+			if data == []:
+				return jsonify({"status": 422, "message": "Parameters Error, la categorie "+i+" n'existe pas"})
 	for i in removeCategorie:
-		sql = "SELECT id FROM categorie WHERE nom = ?"
-		data = Database.request(sql, (i,))
-		if data is None:
-			return jsonify({"status": 422, "message": "Parameters Error, la categorie "+i+" n'existe pas"})
+		if i != "":
+			sql = "SELECT id FROM categorie WHERE nom = ?"
+			data = Database.request(sql, (i,))
+			if data == []:
+				return jsonify({"status": 422, "message": "Parameters Error, la categorie "+i+" n'existe pas"})
 
 	# INSERT film_categorie
 	for categorieName in addCategorie:
@@ -159,4 +177,4 @@ def Film_Categeorie():
 		if data is None:
 			return jsonify({"status": 422, "message": "SQL Error"})	
 	
-	return jsonify({"status": 200, "message": "Film deleted"})
+	return jsonify({"status": 200, "message": "Film's categories updated"})
