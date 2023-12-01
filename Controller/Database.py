@@ -37,4 +37,33 @@ def request(sql, params=None):
 		return rows
 	except sqlite3.Error:
 		return None
-	
+
+
+# def request(sql, params=None, type):
+# 	bdd = create_connection(r"bdd.db")
+# 	cursor = bdd.cursor()
+# 	try:
+# 		if type == "SELECT":
+# 			cursor.execute(sql, params)
+# 			rows = cursor.fetchall()
+# 			bdd.close()
+# 			return rows
+# 		elif type == "INSERT":
+# 			cursor.execute(sql, params)
+# 			bdd.commit()
+# 			last_row_id = cursor.lastrowid
+# 			bdd.close()
+# 			return last_row_id
+# 		elif type == "UPDATE":
+# 			cursor.execute(sql, params)
+# 			bdd.commit()
+# 			bdd.close()
+# 			return True
+# 		elif type == "DELETE":
+# 			cursor.execute(sql, params)
+# 			bdd.commit()
+# 			bdd.close()
+# 			return True
+# 	except sqlite3.Error:
+# 		return None
+
