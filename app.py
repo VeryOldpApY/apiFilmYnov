@@ -43,6 +43,10 @@ app.register_blueprint(swaggerui_blueprint)
 
 ###
 
+@app.route("/test", methods=["GET", "POST"])
+def test():
+	return request.path
+
 @app.route("/")
 def index():
 	return {"status": "API is running"}
