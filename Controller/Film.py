@@ -63,7 +63,6 @@ def getListFilm():
 	if dataFilm is None:
 		return returnAPIFormat(data=None, link=request.path, method=request.method, status=422, message="SQL Error")
 	
-	print(dataFilm)
 	data = []
 	for film in dataFilm:
 		sql = "SELECT c.uid, c.nom FROM categorie c, film_categorie fc WHERE fc.film_id = (SELECT id FROM film WHERE uid = ?) AND c.id = fc.categorie_id"
@@ -120,21 +119,19 @@ def postFilm():
 	
 	# INSERT FILM
 	sql = "INSERT INTO film (uid, titre, description, dateParution, notation) VALUES (?, ?, ?, ?, ?)"
-	data = Database.request(sql, (str(uuid.uuid4()), titre, description, dateFormat, notation))
-	if data is None:
-		return returnAPIFormat(data=None, link=request.path, method=request.method, status=422, message="SQL Error")
+	Database.request(sql, (str(uuid.uuid4()), titre, description, dateFormat, notation))
 	
 	# RECUP ID DE FILM
 	sql = "SELECT id FROM film WHERE titre = ?"
 	filmId = Database.request(sql, (titre,))
+	if filmId is None:
+		return returnAPIFormat(data=None, link=request.path, method=request.method, status=422, message="SQL Error")
 	
 	# INSERT film_categorie UNIQUEMENT SI IL Y A DES CATEGORIES A AJOUTER
 	if len(listeCategorieId) != 0:
 		for categorieId in listeCategorieId:
 			sql = "INSERT INTO film_categorie (film_id, categorie_id) VALUES (?, ?)"
-			data = Database.request(sql, (filmId, categorieId))
-			if data is None:
-				return returnAPIFormat(data=None, link=request.path, method=request.method, status=422, message="SQL Error")
+			Database.request(sql, (filmId, categorieId))
 	data = {
 		"uid": uid
 	}
