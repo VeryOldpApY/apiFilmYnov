@@ -39,7 +39,6 @@ jobs:
                 with:
                   files: ./*
                   tag_name: v1.0.0
-                  release_name: Release
-                  body: Release notes
+                  body: Release notes for v1.0.0
                 env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
