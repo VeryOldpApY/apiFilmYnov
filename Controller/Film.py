@@ -132,9 +132,11 @@ def postFilm():
 		for categorieId in listeCategorieId:
 			sql = "INSERT INTO film_categorie (film_id, categorie_id) VALUES (?, ?)"
 			Database.request(sql, (filmId, categorieId))
+
 	data = {
 		"uid": uid
 	}
+	
 	return returnAPIFormat(data=data, link=request.path, method=request.method, status=200, message="Film created")
 
 
