@@ -119,7 +119,7 @@ def postFilm():
 	
 	# INSERT FILM
 	sql = "INSERT INTO film (uid, titre, description, dateParution, notation) VALUES (?, ?, ?, ?, ?)"
-	Database.request(sql, (str(uuid.uuid4()), titre, description, dateFormat, notation))
+	Database.request(sql, (str(uid), titre, description, dateFormat, notation))
 	
 	# RECUP ID DE FILM
 	sql = "SELECT id FROM film WHERE titre = ?"

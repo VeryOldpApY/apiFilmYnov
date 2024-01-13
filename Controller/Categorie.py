@@ -94,7 +94,7 @@ def postCategorie():
 		return returnAPIFormat(data=None, link=request.path, method=request.method, status=422, message="Parameters Error")
 	
 	sql = "INSERT INTO categorie (uid, nom) VALUES (?, ?)"
-	dataCategorie = Database.request(sql, (str(uuid.uuid4()), nom))
+	dataCategorie = Database.request(sql, (str(uid), nom))
 	if dataCategorie is None:
 		return returnAPIFormat(data=None, link=request.path, method=request.method, status=422, message="SQL Error")
 
