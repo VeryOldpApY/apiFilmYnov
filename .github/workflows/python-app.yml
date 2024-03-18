@@ -47,6 +47,8 @@ jobs:
   needs: test
   if: ${{ github.event_name == 'workflow_dispatch' }}
   steps:
+   - name: Checkout
+     uses: actions/checkout@v4
    - name: Release
      id: release
      uses: softprops/action-gh-release@v2
@@ -54,12 +56,12 @@ jobs:
       tag_name: ${{ github.event.inputs.version }}
       name: Release ${{ github.event.inputs.version }}
       files: |
-       ./Controller/*
-       ./Util/*
-       ./app.py
-       ./setup.py
-       ./auto_install.py
-       ./requirements.txt
-       ./schemaBdd.sql
+       Controller/*
+       Util/*
+       app.py
+       setup.py
+       auto_install.py
+       requirements.txt
+       schemaBdd.sql
      env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
