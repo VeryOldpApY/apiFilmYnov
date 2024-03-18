@@ -1,9 +1,5 @@
 import os
-import sqlite3
-
-from datetime import datetime
-from sqlite3 import Error
-from flask import Flask, jsonify, request
+from flask import Flask, request
 ###
 from flask_swagger_ui import get_swaggerui_blueprint
 
@@ -46,6 +42,7 @@ app.register_blueprint(swaggerui_blueprint)
 @app.route("/test", methods=["GET", "POST"])
 def test():
 	return request.path
+
 
 @app.route("/")
 def index():
