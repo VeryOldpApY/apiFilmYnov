@@ -47,14 +47,12 @@ jobs:
   needs: test
   if: ${{ github.event_name == 'workflow_dispatch' }}
   steps:
-   - name: Create Release
-     id: create_release
-     uses: "marvinpinto/action-automatic-releases@latest"
+   - name: Release
+     id: release
+     uses: softprops/action-gh-release@v2
      with:
-      repo_token: "${{ secrets.GITHUB_TOKEN }}"
-      automatic_release_tag: "latest"
-      prerelease: false
-      title: "Development Build"
+      tag_name: ${{ github.event.inputs.version }}
+      name: Release ${{ github.event.inputs.version }}
       files: |
        Controller/*
        Util/*
@@ -63,3 +61,5 @@ jobs:
        auto_install.py
        requirements.txt
        schemaBdd.sql
+     env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
