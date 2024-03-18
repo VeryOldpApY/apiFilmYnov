@@ -52,5 +52,6 @@ jobs:
         with:
           tag_name: V${{ github.event.inputs.version }}
           body: Release notes for version V${{ github.event.inputs.version }}
+          asset: .
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
