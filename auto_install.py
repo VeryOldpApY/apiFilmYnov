@@ -1,6 +1,7 @@
-import requests
-import zipfile
 import os
+import zipfile
+
+import requests
 
 api_url = f"https://api.github.com/repos/VeryOldpApY/apiFilmYnov/releases/latest"
 
@@ -20,7 +21,7 @@ archive = requests.get(download_url)
 # Enregistrer l'archive dans un fichier
 with open("archive.zip", "wb") as file:
 	file.write(archive.content)
-	
+
 # Extraire l'archive
 with zipfile.ZipFile("archive.zip", "r") as zip_ref:
 	zip_ref.extractall("./test")

@@ -1,6 +1,6 @@
 # GET ALL FILMS
-import uuid
 import base64
+import uuid
 from datetime import datetime
 
 from flask import jsonify, request, Blueprint
@@ -42,7 +42,7 @@ def getFilm():
 	
 	for i in dataCategorie:
 		data["categorie"].append(i[1])
-		
+	
 	return returnAPIFormat(data=data, link=request.path, method=request.method)
 
 
@@ -132,7 +132,7 @@ def postFilm():
 		for categorieId in listeCategorieId:
 			sql = "INSERT INTO film_categorie (film_id, categorie_id) VALUES (?, ?)"
 			Database.request(sql, (filmId, categorieId))
-
+	
 	data = {
 		"uid": uid
 	}

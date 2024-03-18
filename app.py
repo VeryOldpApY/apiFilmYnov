@@ -1,13 +1,14 @@
 import os
+
 from flask import Flask, request
 ###
 from flask_swagger_ui import get_swaggerui_blueprint
 
-###
-
-from Controller import Film
 from Controller import Categorie
 from Controller import Database
+from Controller import Film
+
+###
 
 app = Flask(__name__)
 app.register_blueprint(Film.route_blueprint)

@@ -1,7 +1,6 @@
 import uuid
-from datetime import datetime
 
-from flask import jsonify, request, Blueprint
+from flask import request, Blueprint
 
 from Controller import Database
 from Util.API import returnAPIFormat
@@ -26,7 +25,7 @@ def getCategorie():
 		"uid": dataCategorie[0][0],
 		"nom": dataCategorie[0][1]
 	}
-
+	
 	return returnAPIFormat(data=data, link=request.path, method=request.method)
 
 
@@ -45,14 +44,14 @@ def getCategorieFilm():
 		return returnAPIFormat(data=None, link=request.path, method=request.method, status=422, message="SQL Error")
 	
 	data = []
-
+	
 	for categorie in dataCategorie:
 		data.append({
-		"uid": categorie[0],
-		"titre": categorie[1],
-		"description": categorie[2],
-		"dateparution": categorie[3],
-		"notation": categorie[4]
+			"uid": categorie[0],
+			"titre": categorie[1],
+			"description": categorie[2],
+			"dateparution": categorie[3],
+			"notation": categorie[4]
 		})
 	
 	return returnAPIFormat(data=data, link=request.path, method=request.method)
@@ -70,7 +69,7 @@ def getListCategorie():
 		return returnAPIFormat(data=None, link=request.path, method=request.method, status=422, message="Parameters Error")
 	
 	sql = "SELECT uid, nom FROM categorie LIMIT ? OFFSET ?"
-	dataCategorie = Database.request(sql, ((page+1)*10, page*10))
+	dataCategorie = Database.request(sql, ((page + 1) * 10, page * 10))
 	if dataCategorie is None:
 		return returnAPIFormat(data=None, link=request.path, method=request.method, status=422, message="SQL Error")
 	
@@ -80,8 +79,9 @@ def getListCategorie():
 			"uid": categorie[0],
 			"nom": categorie[1]
 		})
-
+	
 	return returnAPIFormat(data=data, link=request.path, method=request.method)
+
 
 # CREATE categorie
 @route_blueprint.route("/categorie", methods=["POST"])
@@ -96,12 +96,13 @@ def postCategorie():
 	dataCategorie = Database.request(sql, (str(uid), nom))
 	if dataCategorie is None:
 		return returnAPIFormat(data=None, link=request.path, method=request.method, status=422, message="SQL Error")
-
+	
 	data = {
 		"uid": uid
 	}
-
+	
 	return returnAPIFormat(data=data, link=request.path, method=request.method)
+
 
 # DELETE categorie
 @route_blueprint.route("/categorie", methods=["DELETE"])
@@ -110,13 +111,13 @@ def deleteCategorie():
 	uid = param["uid"]
 	if uid is None:
 		return returnAPIFormat(data=None, link=request.path, method=request.method, status=422, message="Parameters Error")
-
+	
 	# DELETE film_categorie (enlève la catégorie à tous les films)
 	sql = "DELETE FROM film_categorie WHERE categorie_id = (SELECT id FROM categorie WHERE uid = ?)"
 	data = Database.request(sql, (uid,))
 	if data is None:
 		return returnAPIFormat(data=None, link=request.path, method=request.method, status=422, message="SQL Error")
-
+	
 	# DELETE la categorie
 	sql = "DELETE FROM categorie WHERE uid = ?"
 	data = Database.request(sql, (uid,))

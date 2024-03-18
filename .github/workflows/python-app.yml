@@ -49,20 +49,10 @@ jobs:
   steps:
    - name: Create Release
      id: create_release
-     uses: Hs1r1us/Release-AIO@v2.0.0
-     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+     uses: "marvinpinto/action-automatic-releases@latest"
      with:
-      asset_files: |
-       Controller/*
-       Util/*
-       Ressource/*
-       app.py
-       auto_install.py
-       schemaBdd.sql
-       setup.py
-       requirements.txt
-      tag_name: v${{ github.event.inputs.version }}
-      release_name: Release ${{ github.event.inputs.version }}
-      repo: ${{ github.repository }}
-      body: Release ${{ github.event.inputs.version }}
+      repo_token: "${{ secrets.GITHUB_TOKEN }}"
+      automatic_release_tag: "latest"
+      prerelease: false
+      title: "Development Build"
+      files: .
