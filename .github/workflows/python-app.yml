@@ -48,14 +48,16 @@ jobs:
   if: ${{ github.event_name == 'workflow_dispatch' }}
   steps:
    - name: Create zip file
-     run: zip -r package.zip .
+     uses: montudor/action-zip@v1
+     with:
+      args: zip -qq -r package.zip .
    - name: Create Release
      id: create_release
      uses: actions/create-release@v1
      env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
      with:
-      asset_path: .package.zip
+      asset_path: ./package.zip
       asset_name: package.zip
       asset_content_type: application/zip
       upload_url: ${{ steps.create_release.outputs.upload_url }}
