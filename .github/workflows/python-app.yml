@@ -40,7 +40,7 @@ jobs:
       flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
    - name: Test with pytest
-     run: pytest test_app.py
+     run: pytest
 
  publish:
   runs-on: ubuntu-latest
@@ -52,7 +52,7 @@ jobs:
    - name: Create zip file
      run: |
       cd ..
-      zip -r release.zip *
+      zip -r release.zip * -x .git/\* -x .github/\* -x release.zip -x .gitignore -x .gitattributes -x .DS_Store -x .editorconfig -x .vscode/\* -x .idea/\*
       mv release.zip ${{ github.workspace }}/release.zip
    - name: Release
      id: release
