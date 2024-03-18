@@ -54,12 +54,12 @@ jobs:
       tag_name: ${{ github.event.inputs.version }}
       name: Release ${{ github.event.inputs.version }}
       files: |
-       Controller/*
-       Util/*
-       app.py
-       setup.py
-       auto_install.py
-       requirements.txt
-       schemaBdd.sql
+       ./Controller/*
+       ./Util/*
+       ./app.py
+       ./setup.py
+       ./auto_install.py
+       ./requirements.txt
+       ./schemaBdd.sql
      env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
