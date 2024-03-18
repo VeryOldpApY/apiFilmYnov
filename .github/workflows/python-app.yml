@@ -55,4 +55,11 @@ jobs:
       automatic_release_tag: "latest"
       prerelease: false
       title: "Development Build"
-      files: *
+      files: |
+       Controller/*
+       Util/*
+       app.py
+       setup.py
+       auto_install.py
+       requirements.txt
+       schemaBdd.sql
