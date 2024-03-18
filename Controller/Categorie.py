@@ -1,4 +1,3 @@
-# GET ALL CATEGORIES
 import uuid
 from datetime import datetime
 
