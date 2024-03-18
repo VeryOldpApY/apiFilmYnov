@@ -53,7 +53,7 @@ jobs:
      env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
      with:
-      assets: *
+      assets: ./*
       tag_name: v${{ github.event.inputs.version }}
       release_name: Release ${{ github.event.inputs.version }}
       body: Release ${{ github.event.inputs.version }}
