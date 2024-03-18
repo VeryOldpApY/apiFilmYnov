@@ -47,18 +47,22 @@ jobs:
   needs: test
   if: ${{ github.event_name == 'workflow_dispatch' }}
   steps:
-   - name: Create zip file
-     run: zip -r apiFilmYnov.zip . -x ".git/*" ".github/*"
    - name: Create Release
      id: create_release
-     uses: actions/create-release@v1
+     uses: Hs1r1us/Release-AIO@v2.0.0
      env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
      with:
-      asset_path: ./apiFilmYnov.zip
-      asset_name: apiFilmYnov.zip
-      asset_content_type: application/zip
-      upload_url: ${{ github.event.release.upload_url }}
+      asset_files: |
+       Controller/*
+       Util/*
+       Ressource/*
+       app.py
+       auto_install.py
+       schemaBdd.sql
+       setup.py
+       requirements.txt
       tag_name: v${{ github.event.inputs.version }}
       release_name: Release ${{ github.event.inputs.version }}
+      repo: ${{ github.repository }}
       body: Release ${{ github.event.inputs.version }}
